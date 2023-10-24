@@ -1,0 +1,34 @@
+# Dependency directories
+node_modules/
+
+# Environment configuration
+.env
+
+# Build output
+build/
+dist/
+lib/
+
+# Logs
+logs/
+*.log
+
+# Testing
+coverage/
+
+# Editor-specific files
+.vscode/
+.idea/
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
+
+# System files
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+
+
+types/

@@ -1,0 +1,24 @@
+{
+  /* Add your custom configuration here. */
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": false,
+    "module": "ESNext",
+    "target": "ESNext",
+    "strict": true,
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "noEmit": false,
+    "noImplicitAny": true,
+    "declarationDir": "./types",
+    "outDir": "./dist",
+    "lib": [
+      "es2017",
+      "scripthost"
+    ],
+  },
+  "include": [
+    "./src/**/*"
+  ]
+}
