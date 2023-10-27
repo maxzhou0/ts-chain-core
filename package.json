@@ -1,6 +1,6 @@
 {
   "name": "ts-chain-core",
-  "version": "0.0.2-alpha10",
+  "version": "0.0.3-alpha1",
   "type": "module",
   "umd:name": "ts-chain-core",
   "description": "Chainable programming tool for Typescript",

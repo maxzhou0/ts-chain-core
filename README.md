@@ -259,6 +259,17 @@ const persistChainInstance =  ChainCore(null)
 
 ```
 
+##### 访问`cache arguments`
+
+```ts
+ChainCore(null)
+    .setFunction((...args:any[])=>console.log(...args))
+        ('a really really really really long expression') //a really really really really long expression
+        (CacheValue(x=>'🎄'+x+'🎄')) //🎄a really really really really long expression🎄
+        (CacheValue(x=>'✨'+x+'✨'))  //✨🎄a really really really really long expression🎄✨
+```
+
+
 #### 批量调用方法
 
 `ts-chain-core`提供了两个批量调用()操作的方法，请看示例

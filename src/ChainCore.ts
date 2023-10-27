@@ -7,6 +7,14 @@ import {
 
 export const ChangeRuntimeReturn = () => undefined as any;
 
+const __CACHE_VAL_SYMBOL__ = Symbol('__CACHE_VAL_SYMBOL__');
+export const CacheValue = (fn:(cacheVal:any)=>any)=>{
+  return {
+    fn,
+    __id:__CACHE_VAL_SYMBOL__
+  }
+}
+
 export const ChainCore = (thisArg?: any): ChainRefInit => {
   const instance = ((...args: any) => {
     const f = instance.__chainRef__runtime.__function;
@@ -26,8 +34,20 @@ export const ChainCore = (thisArg?: any): ChainRefInit => {
     instance.__chainRef__runtime.__argsCache.splice(
       0,
       args.length,
-      ...args.map((x, index) =>
-        x === undefined ? instance.__chainRef__runtime.__argsCache[index] : x
+      ...args.map((x, index) =>{
+        if(x===undefined) return instance.__chainRef__runtime.__argsCache[index];
+        else if(x.__id===__CACHE_VAL_SYMBOL__&& typeof  x.fn  === 'function'){
+          try {
+            return x.fn.call(instance.getThis(),instance.__chainRef__runtime.__argsCache[index] )
+          } catch (error) {
+            console.error(error)
+            throw error;
+          }
+        }else{
+          return x;
+        }
+
+      }
       )
     );
     const model = f.__modelType;

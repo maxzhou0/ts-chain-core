@@ -1,5 +1,5 @@
 import { ReferTo } from "../src/Chain-types";
-import { ChainCore } from "../src/ChainCore";
+import { CacheValue, ChainCore } from "../src/ChainCore";
 import { testSuite } from "./TestUtils";
 
 testSuite("miscFunctionTest", {
@@ -124,5 +124,14 @@ testSuite("miscFunctionTest", {
         .addEnd(11, 10);
     },
     ["8", "11", "9", "10", "11"],
+  ],
+  "cache value fucntion": [
+    () => {
+      ChainCore(null).setFunction((...args:any[])=>console.log(...args))
+      ('a really really really really long expression')
+      (CacheValue(x=>'🎄'+x+'🎄'))
+      (CacheValue(x=>'✨'+x+'✨'))
+    },
+    ["a really really really really long expression", "🎄a really really really really long expression🎄","✨🎄a really really really really long expression🎄✨"],
   ],
 });
