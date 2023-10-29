@@ -7,13 +7,11 @@ import {
 
 export const ChangeRuntimeReturn = () => undefined as any;
 
+const __CACHE_VAL_PRESERVE__ = Symbol('__CACHE_VAL_PRESERVE__');
+export const PreserveCacheValue = <T>(value:T)=>(({value,__id:__CACHE_VAL_PRESERVE__}) as  T)
 const __CACHE_VAL_SYMBOL__ = Symbol('__CACHE_VAL_SYMBOL__');
-export const CacheValue = (fn:(cacheVal:any)=>any)=>{
-  return {
-    fn,
-    __id:__CACHE_VAL_SYMBOL__
-  }
-}
+export const AccessCacheValue = <T>(fn:(cacheValue:T)=>T)=>(({fn,__id:__CACHE_VAL_SYMBOL__}) as T)
+
 
 export const ChainCore = (thisArg?: any): ChainRefInit => {
   const instance = ((...args: any) => {
@@ -31,14 +29,16 @@ export const ChainCore = (thisArg?: any): ChainRefInit => {
     f: ExtendFunction,
     ...args: any[]
   ) => {
-    instance.__chainRef__runtime.__argsCache.splice(
+    const argsCache = instance.__chainRef__runtime.__argsCache;
+    const thisCallValues = [...argsCache];
+    thisCallValues.splice(
       0,
       args.length,
       ...args.map((x, index) =>{
-        if(x===undefined) return instance.__chainRef__runtime.__argsCache[index];
+        if(x===undefined) return argsCache[index];
         else if(x.__id===__CACHE_VAL_SYMBOL__&& typeof  x.fn  === 'function'){
           try {
-            return x.fn.call(instance.getThis(),instance.__chainRef__runtime.__argsCache[index] )
+            return x.fn.call(instance.getThis(),argsCache[index] )
           } catch (error) {
             console.error(error)
             throw error;
@@ -50,16 +50,23 @@ export const ChainCore = (thisArg?: any): ChainRefInit => {
       }
       )
     );
+    //overwrite or preserve cache
+    for(const index in thisCallValues){
+      if(thisCallValues[index]?.__id===__CACHE_VAL_PRESERVE__){
+        thisCallValues[index] = thisCallValues[index]?.value;
+      }else{
+        argsCache[index] = thisCallValues[index];
+      }
+    }
     const model = f.__modelType;
-    const cache = instance.__chainRef__runtime.__argsCache;
     const result = (() => {
       if (model === "INSTANCE") {
         return f.call(
           instance.getThis(),
           instance,
-          ...instance.__chainRef__runtime.__argsCache
+          ...argsCache
         );
-      } else return f.call(instance.getThis(), ...cache);
+      } else return f.call(instance.getThis(), ...thisCallValues);
     })();
     if (noRedirection) return instance;
     if (typeof result === "function") {

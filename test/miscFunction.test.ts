@@ -1,5 +1,5 @@
 import { ReferTo } from "../src/Chain-types";
-import { CacheValue, ChainCore } from "../src/ChainCore";
+import { AccessCacheValue, ChainCore, PreserveCacheValue } from "../src/ChainCore";
 import { testSuite } from "./TestUtils";
 
 testSuite("miscFunctionTest", {
@@ -127,11 +127,31 @@ testSuite("miscFunctionTest", {
   ],
   "cache value fucntion": [
     () => {
+      const pad = (s:string)=>AccessCacheValue<string>(cacheValue=>s+cacheValue+s)
       ChainCore(null).setFunction((...args:any[])=>console.log(...args))
-      ('a really really really really long expression')
-      (CacheValue(x=>'🎄'+x+'🎄'))
-      (CacheValue(x=>'✨'+x+'✨'))
+      ('a really really really really long expression') //a really really really really long expression
+      (pad(`🎄`))                                       //🎄a really really really really long expression🎄
+      (pad(`✨`))                                       //✨🎄a really really really really long expression🎄✨
     },
     ["a really really really really long expression", "🎄a really really really really long expression🎄","✨🎄a really really really really long expression🎄✨"],
+  ],
+  "cache value fucntion no overwrite": [
+    () => {
+      const pad = (s:string)=>AccessCacheValue<string>(cacheValue=>PreserveCacheValue(s+cacheValue+s));
+      ChainCore(null).setFunction((...args:any[])=>console.log(...args))  
+      ('i will not be extended')  //i will not be extended
+      (pad(`🎄`))                 //🎄i will not be extended🎄
+      (pad(`✨`))                 //✨i will not be extended✨
+    },
+    ["i will not be extended", "🎄i will not be extended🎄","✨i will not be extended✨"],
+  ],
+  "use preseve individually": [
+    () => {
+      ChainCore(null).setFunction((...args:any[])=>console.log(...args))
+      ('🎄🎄🎄','🍺🍺🍺')                   //🎄🎄🎄 🍺🍺🍺
+      ('🎉🎉🎉',PreserveCacheValue('💥')) //🎉🎉🎉 💥
+      (`✨✨✨`)                            //✨✨✨ 🍺🍺🍺
+    },
+    ["🎄🎄🎄 🍺🍺🍺","🎉🎉🎉 💥","✨✨✨ 🍺🍺🍺"],
   ],
 });
