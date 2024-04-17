@@ -1,10 +1,13 @@
 <p align="center">
   <img src="./docs/img/title.png" style="transition: all 2.5s ease;" onmouseover="this.style.filter='hue-rotate(-80deg)'"  onmouseout="this.style.filter=''" width="400" />
 </p>
+
+
 <p align='center'>
   <a style="color:#D437B5;transition: all 0.5s ease;" onmouseover="this.style.color='#0069D3'"
     onmouseout="this.style.color='#D437B5'" href='./README.en.md'>English</a> | 简体中文 
 </p>
+
 
 # ts-chain-core
 
@@ -18,16 +21,15 @@
 ![image](./docs/img/screenshot-1.gif)
 - **🌈上手简单** 你只要掌握三个核心的api就可以编写出满足大部分需求的链式接口。
 - **🚀小巧** 程序本体压缩后仅`3kb`大小。
-
-
 ### 快速开始
 
 #### 安装
-
 ```shell
 npm i ts-chain-core
 ```
-####基本用法
+
+
+#### 基本用法
 
 ```ts
 import { ChainCore } from "ts-chain-core";
@@ -40,6 +42,7 @@ ChainCore(null)
     ('🍍')
     ('🥭')
 ```
+
 
 #### 将类方法直接转换成链式方法
 
@@ -80,14 +83,12 @@ new Example().toChain()
 | 终止链式反应 | 否 | 否 | 是 |
 
 但是()操作的返回不论是什么类型都不会再次修改()操作
-
 #### 扩展实例方法
 
 在扩展方法里面，你也许需要调用`ChainCore`已经扩展的方法或者`ChainCore`自有的方法，在这种方法中，你需要在入口参数中增加一个`ChainCore`的引用。
 `ChainCore`提供了一个方法来扩展这种方法，并在该方法被调用时自动传入`ChainCore`实例，我们把这种方法称为`实例方法`
 
 扩展方法举例
-
 ```ts
 ChainCore(null).extendFunctionsFromObject({
     sayHello: (name: string) => {
@@ -108,11 +109,8 @@ ChainCore(null).extendFunctionsFromObject({
 }).play('morning','garden','🍓')
 ```
 
+
 扩展`实例方法`里的第一个入口参数，要预留给`ts-chain-core`，它不用标注类型，在调用时不用传入
-
-#### 扩展方法中的回调
-
-你也许需要在扩展方法中的回调中访问`ChainCore`的方法，以下是上一个例子的不同的实现方式
 
 ```ts
 ChainCore(null).extendFunctionsFromObject({
@@ -133,10 +131,10 @@ ChainCore(null).extendFunctionsFromObject({
     ch.sayHello('🍓')
 })        
 ```
+
 回调函数中的第一个参数标注为`CurrentStateChainRef`类型，在调用时，传入的ChainCore将自动获得此前之前扩展方法的代码提示。
 
 实例方法同样可以设置()操作，()操作中同样也可以使用回调访问`ChainCore`实例
-
 ```ts
 ChainCore(null).extendFunctionsFromObject({
     sayHello: (name: string) => {
@@ -154,8 +152,8 @@ ChainCore(null).extendFunctionsFromObject({
 },'morning','garden','🍓');
 ```
 
-**限制注意**📢📢 *回调函数中的`ChainCore`实例是由扩展方法自身传入的，你可以不必在第一位传入`ChainCore`实例，但是我们约定只有在第一位的参数类型标注为`CurrentStateChainRef`，才会转换成当前的`ChainCore`类型*
 
+**限制注意**📢📢 *回调函数中的`ChainCore`实例是由扩展方法自身传入的，你可以不必在第一位传入`ChainCore`实例，但是我们约定只有在第一位的参数类型标注为`CurrentStateChainRef`，才会转换成当前的`ChainCore`类型*
 
 
 ##### 📑类型自动转换
@@ -165,14 +163,9 @@ ChainCore(null).extendFunctionsFromObject({
 然而该技术存在一定局限性。首先，当前`typescript`存在的限制，让所有的参数都实现自动转换是不切实际的，在保证使用和运算量之间做了权衡，该功能目前只能提供给函数返回类型和入参的前四个。在绝大多数情况下，这是够用的。
 
 另外`remapping`也不支持泛型映射，但`ts-chain-core`提供了一套解决方案，后面会提到。
-
-
-
-
 ##### 🔍ChainCore类型声明
 
 由于`ChainCore`是一个比较复杂的类型，但有时候的你的代码中需要声明扩展了某些方法的`ChainCore`类型，在绝大多数情况下，直接书写`ChainCore`类型是不被推荐的，因为过于复杂。这里推荐用类型推导的方式来进行声明
-
 ```ts
 //声明示例
 function chainFactory(){
@@ -193,13 +186,12 @@ function myFunction(ch:MyChainType){
 
 
 
+
 #### 🔍`thisArg`
 
 `thisArg`是`ChainCore`的内置变量，用于设置运行方法中的this
 
 它可以通过`ChainCore()`传入，也可以通过`getThis()`和`setThis()`在运行中修改和访问
-
-
 #### `arguments cache`
 
 为了避免重复的输入，`ts-chain-core`的运行时缓存了上一次调用的参数，参数不传入或传入undefined时，`ChainCore`会传入上一次传入的值作为替代
@@ -216,6 +208,7 @@ UIKit(this)
         ('myEmailLabel')
 ```
 
+
 在大多数场合下，这个特性确实很有帮助，但是在有些场合，它可能会产生一些令人困惑的结果，并让人误认为是程序的bug
 
 ```ts
@@ -230,6 +223,7 @@ ChainCore(null)
     .log('d')                         // stdout: d b c  
     .log(undefined,'e',undefined)     // stdout: d e c
 ```
+
 `ts-chain-core`提供了`clearArgCache()`方法用于清空上一次的缓存
 
 ```ts
@@ -246,6 +240,7 @@ ChainCore(null)
     .log(undefined,'e',undefined)     // stdout:  e 
 ```
 
+
 你也可以在调用它来清除潜在的内存泄露
 
 ```ts
@@ -259,6 +254,7 @@ const persistChainInstance =  ChainCore(null)
 
 ```
 
+
 ##### 访问`cache arguments`
 
 ```ts
@@ -270,10 +266,10 @@ ChainCore(null)
 ```
 
 
+
 #### 批量调用方法
 
 `ts-chain-core`提供了两个批量调用()操作的方法，请看示例
-
 ```ts
 ChainCore(null)
     .setFunction((m: number, n?: number) => {
@@ -290,12 +286,12 @@ ChainCore(null)
     .batch([1,2],[2],[3],[4],[5],[6]);
 
 ```
+
 批量调用仍然遵循参数缓存原则
 
 #### 扩展运行时
 
 `ChainCore`的运行时除了`thisArg`和`arguments cache`之外，还运行使用者进行扩展，扩展的属性通过`runtime`接口进行访问
-
 ```ts
 const ch = ChainCore(null)
     .extendRuntime<{value:string}>()  //extend a field names `value`
@@ -311,11 +307,86 @@ const result = ch.setValue('hello').getValue();
 console.log(result) //hello
 ```
 
+
+这里有一个例子简单的实现模拟 `JQuery` 的功能.
+
+```ts
+import { ChainCore, CurrentStateChainRef } from "ts-chain-core";
+
+type QueryType = string | Document | HTMLElement | EventTarget | null;
+
+const getQuery = (q: QueryType) => {
+  if (q === null || q === undefined) return document.body;
+  if (typeof q === "string") {
+    return document.querySelector(q) as HTMLElement;
+  } else return q as HTMLElement;
+};
+const $ = (q: QueryType) => {
+
+  return ChainCore(null)
+    .extendRuntime<{ dom: HTMLElement }>()
+    .extendInstanceFunctions({
+      ready(ch, fn: () => void) {
+        ch.runtime.dom.addEventListener("DOMContentLoaded", fn);
+      },
+      click(ch, fn: (ch: CurrentStateChainRef, event: MouseEvent) => void) {
+        ch.runtime.dom.onclick = (event: MouseEvent) => fn(ch, event);
+      },
+      addClass(ch, className: string) {
+        ch.runtime.dom.classList.add(className);
+      },
+      removeClass(ch, className: string) {
+        ch.runtime.dom.classList.remove(className);
+      },
+      show(ch) {
+        ch.runtime.dom.style.display = "";
+      },
+      hide(ch) {
+        ch.runtime.dom.style.display = "none";
+      },
+      text(ch, str: any) {
+        ch.runtime.dom.textContent = str;
+      },
+      query(ch, q: QueryType) {
+        ch.runtime.dom = getQuery(q);
+      },
+    })
+    .query(q);
+};
+
+$(document).ready(() => {
+  $(".button")
+    .extendRuntime({
+      clicked: false,
+    })
+    .click((ch, event) => {
+      ch.runtime.clicked = !ch.runtime.clicked;
+      if (ch.runtime.clicked) {
+        $(event.currentTarget)
+          .addClass("clicked")
+          .query("h2")
+          .hide()
+          .query("h1")
+          .text("Hello, Chain!")
+          .show();
+      } else {
+        $(event.currentTarget)
+          .removeClass("clicked")
+          .query("h2")
+          .show()
+          .query("h1")
+          .hide();
+      }
+    });
+});
+```
+
+你可以 [直接在web上运行它](https://codesandbox.io/p/github/maxzhou0/ts-chain-core-web-demo/main?file=%2Fsrc%2Fmain.ts)
+
 #### 🚀扩展运行时类型动态修改和指向
 
 在一些应用中，无法事先确认数据的具体类型，比如，你要做一个对数组进行操作的函数库，
 在定义方法的时候，无法指明需要操作的类型 （*这要求泛型参数能够动态调整，这一点对于目前的`typescript`来说是做不到的*）*。`ts-chain-core`提供了引用扩展运行时类型的方法`ReferTo<>`和动态修改运行时类型的方法`ChangeChainRuntime<,>`来达成目的，请看例子
-
 ```ts
 
 const ch = ChainCore(null)
@@ -347,6 +418,7 @@ ch.group([0,1,2,3]) //group<number[]> will change  setToIndex and each's functio
 
 ```
 
+
 你可能注意到，其实每个`ts-chain-core`扩展的方法都是泛型方法，泛型参数有四个，可以通过`ReferTo<'<0>'>`,`ReferTo<'<1>'>`,`ReferTo<'<2>'>`,`ReferTo<'<3>'>`来实现动态修改类型的目的，返回时用到`ChangeChainRuntime`则是用来修改运行参数的类型的。
 
 ##### 🚀`ReferTo<>`语法
@@ -355,7 +427,6 @@ ReferTo<`T[]`>表示它是类型T的数组类型
 ReferTo<`T[number]`> 表示它是类型T的数组元素类型.*前提T必须是一个数组类型否则会得到错误类型提示*
 ReferTo还可以用路径符号`::`来表示一个复杂类型下面的某个属性的类型
 下面是举例（此例仅做展示，并不表示一定需要用`ReferTo<>`来指向一个类型，除非它是一个需要用泛型来表达的类型）
-
 ```ts
 ChainCore(null).extendRuntime<{
         actor:{
@@ -373,6 +444,7 @@ ChainCore(null).extendRuntime<{
     })
     ({id:1,key:'comedy',name:'comedy'})
 ```
+
 
 ##### 🚀多个扩展类型组合
 
